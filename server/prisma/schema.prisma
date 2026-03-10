@@ -1,0 +1,107 @@
+// ============================================================
+// Prisma Schema - Pokemon Draft League
+// ============================================================
+// This file defines the database schema using Prisma ORM.
+// After making changes, run:
+//   npx prisma generate   → regenerate the TypeScript client
+//   npx prisma db push    → sync schema to SQLite file
+//   npx prisma studio     → open browser GUI to inspect data
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // DATABASE_URL env var overrides this in production (Docker volume path)
+  url      = env("DATABASE_URL")
+}
+
+// ── DraftSession ─────────────────────────────────────────────
+// Represents one tournament draft event.
+// A session has coaches, a pokemon pool, and a pick history.
+// Lifecycle: 'setup' → 'active' → 'completed'
+model DraftSession {
+  id                String   @id @default(uuid())
+  name              String                              // Human-readable name e.g. "Season 3 Draft"
+  createdAt         DateTime @default(now())
+  status            String   @default("setup")         // 'setup' | 'active' | 'completed'
+  pointBudget       Int      @default(400)             // Total points each coach has to spend
+  totalCoaches      Int                                // Number of coaches in this draft (8-24)
+  pokemonPerCoach   Int      @default(10)             // How many Pokemon each coach must draft
+  currentPickNumber Int      @default(0)             // 0 = not started; increments after each pick
+
+  // Relations
+  coaches Coach[]
+  pokemon Pokemon[]
+  picks   Pick[]
+}
+
+// ── Coach ────────────────────────────────────────────────────
+// Individual drafter participating in a draft session.
+// draftPosition determines snake order (1-indexed, 1 = first pick).
+model Coach {
+  id              String  @id @default(uuid())
+  sessionId       String
+  name            String                    // Coach's display name
+  draftPosition   Int                       // 1-based position in snake draft order
+  pointsRemaining Int                       // Starts equal to session.pointBudget; decrements on pick
+  isConnected     Boolean @default(false)   // Live connection status (updated by socket events)
+  socketId        String? // Current Socket.io socket ID for broadcasting to this specific client
+
+  // Relations
+  session DraftSession @relation(fields: [sessionId], references: [id])
+  picks   Pick[]
+
+  // Each coach must have a unique draft position within a session
+  @@unique([sessionId, draftPosition])
+  // Coach names should be unique within a session to avoid confusion
+  @@unique([sessionId, name])
+}
+
+// ── Pokemon ──────────────────────────────────────────────────
+// A Pokemon in the draft pool for a specific session.
+// Imported from CSV/JSON before the draft begins.
+// 'types' is stored as a JSON string array: e.g. '["Fire","Flying"]'
+model Pokemon {
+  id        String  @id @default(uuid())
+  sessionId String
+  name      String                     // Official Pokemon name e.g. "Landorus-Therian"
+  tier      String                     // Tier label: "S", "1", "2", "3", "4", "5"
+  points    Int                        // Point cost (100-10 typically, higher = rarer)
+  types     String                     // JSON array string: '["Fire","Flying"]'
+  spriteUrl String?                    // Optional URL to Pokemon sprite image
+  isDrafted Boolean @default(false)   // true once a Pick record exists for this Pokemon
+
+  // Relations
+  session DraftSession @relation(fields: [sessionId], references: [id])
+  picks   Pick[]
+
+  // Pokemon names must be unique within a session (no duplicates in pool)
+  @@unique([sessionId, name])
+}
+
+// ── Pick ─────────────────────────────────────────────────────
+// Records a single draft pick (join between Coach and Pokemon).
+// Pick numbers are globally sequential within a session.
+// The ordered sequence of picks is the authoritative draft history.
+model Pick {
+  id          String   @id @default(uuid())
+  sessionId   String
+  coachId     String
+  pokemonId   String
+  pickNumber  Int                      // Global pick number within session (1-based)
+  pointsSpent Int                      // Points deducted from coach for this pick
+  timestamp   DateTime @default(now()) // When the pick was made
+
+  // Relations
+  session DraftSession @relation(fields: [sessionId], references: [id])
+  coach   Coach        @relation(fields: [coachId], references: [id])
+  pokemon Pokemon      @relation(fields: [pokemonId], references: [id])
+
+  // Each pick number must be unique within a session (no two picks share a slot)
+  @@unique([sessionId, pickNumber])
+  // A Pokemon can only be picked once per session
+  @@unique([sessionId, pokemonId])
+}

@@ -1,0 +1,30 @@
+/**
+ * client/src/app.css
+ * ───────────────────────────────────────────────────────────
+ * Global stylesheet entry point.
+ *
+ * Import order matters:
+ *  1. Skeleton UI theme (design tokens, CSS variables)
+ *  2. Skeleton UI core (component base styles)
+ *  3. Tailwind base/components/utilities
+ *
+ * TODO: Add any global custom styles below the Tailwind directives.
+ * Prefer Tailwind utilities in Svelte components over global CSS.
+ */
+
+/* Skeleton UI - must come before Tailwind */
+@import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+@import '@skeletonlabs/skeleton/styles/skeleton.css';
+
+/* Tailwind CSS layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Custom Global Styles ────────────────────────────────────
+   TODO: Add project-specific global styles here.
+   Examples:
+     - Custom scrollbar styles
+     - Pokemon type badge colors
+     - Animation keyframes for draft notifications
+*/

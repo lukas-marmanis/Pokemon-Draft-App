@@ -1,0 +1,83 @@
+# docker-compose.yml
+# ──────────────────────────────────────────────────────────────
+# One-command startup for the Pokemon Draft League app.
+#
+# Usage:
+#   docker-compose up --build    # Build images and start both services
+#   docker-compose up            # Start with cached images
+#   docker-compose down          # Stop and remove containers
+#   docker-compose down -v       # Also remove the database volume
+#
+# After starting:
+#   Backend:  http://localhost:3000
+#   Frontend: http://localhost:5173
+#
+# To share with coaches, run a tunnel in a separate terminal:
+#   npx ngrok http 3000           # or: npx localtunnel --port 3000
+#   Copy the public URL → share with coaches
+#
+# Database persistence:
+#   SQLite file is stored in 'draft-data' Docker volume.
+#   Data survives container restarts.
+#   To completely reset the draft: docker-compose down -v
+
+version: '3.8'
+
+services:
+
+  # ── Backend: Express + Socket.io + Prisma ──────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: production
+    container_name: pokemon-draft-server
+    ports:
+      - "3000:3000"
+    environment:
+      # Database path inside container (maps to mounted volume)
+      - DATABASE_URL=file:/data/draft.db
+      # Allow requests from the client container
+      - CLIENT_URL=http://localhost:5173
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Persist SQLite database across container restarts
+      - draft-data:/data
+    # TODO: Add health check for Docker orchestration
+    # healthcheck:
+    #   test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 10s
+    restart: unless-stopped
+
+  # ── Frontend: SvelteKit Static Site ────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: production
+      args:
+        # Pass the server URL at build time for Vite to embed
+        # For local use, coaches connect to localhost:3000
+        # For tunnel use, override this with the ngrok URL:
+        #   VITE_API_URL=https://xyz.ngrok.io docker-compose up --build
+        - VITE_API_URL=http://localhost:3000
+    container_name: pokemon-draft-client
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+# ── Named Volumes ───────────────────────────────────────────
+volumes:
+  draft-data:
+    driver: local
+    # TODO: For development, you can bind to a host path for easier debugging:
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: ./server/prisma

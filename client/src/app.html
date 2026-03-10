@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- App metadata -->
+    <meta name="description" content="Pokemon VGC Draft League - Real-time snake draft tool" />
+    <meta name="theme-color" content="#1a1a2e" />
+
+    <!-- SvelteKit injects head content here (styles, scripts) -->
+    %sveltekit.head%
+  </head>
+
+  <!--
+    data-theme: Skeleton UI theme class.
+    Change to one of: skeleton, wintry, modern, rocket, seafoam, vintage, sahara
+    TODO: Make this configurable or let the user toggle themes.
+  -->
+  <body data-sveltekit-preload-data="hover" data-theme="skeleton">
+    <!-- SvelteKit renders the app here -->
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
