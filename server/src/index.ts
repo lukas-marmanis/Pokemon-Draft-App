@@ -19,7 +19,6 @@
  *  Prisma client is created once here and injected into handlers.
  */
 
-import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
