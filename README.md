@@ -1,4 +1,4 @@
-# Pokemon Draft League
+# Pokemon Draft League yo
 
 A self-hosted real-time web app for competitive Pokemon VGC draft leagues. Commissioners run the server locally and share a tunneled URL with coaches, who then participate in a snake-style draft using point budgets.
 
