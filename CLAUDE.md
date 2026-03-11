@@ -4,7 +4,7 @@
 
 Self-hosted real-time web app for Pokemon VGC draft leagues. Commissioners run the server locally (tunneled to public URL), coaches connect via browser to draft unique teams with point budgets in snake-style order.
 
-**Tech Stack**: TypeScript, Node.js/Express, Socket.io, Svelte/SvelteKit, SQLite/Prisma, Tailwind/Skeleton UI
+**Tech Stack**: TypeScript, Bun, Express, Socket.io, Svelte/SvelteKit, SQLite/Prisma, Tailwind/Skeleton UI
 
 ## Project Structure
 
@@ -37,11 +37,12 @@ pokemon-draft-league/
 ## Development
 
 **Run locally**:
-- Backend: `cd server && npm install && npx prisma generate && npm run dev` (port 3000)
-- Frontend: `cd client && npm install && npm run dev` (port 5173)
+- Backend: `cd server && bun install && bunx prisma generate && bun run dev` (port 3000)
+- Frontend: `cd client && bun install && bun run dev` (port 5173)
 - Both: `docker-compose up --build`
+- Type check: `cd server && bun run typecheck`
 
-**Database**: SQLite file at `server/prisma/draft.db`. Reset with `rm server/prisma/draft.db && npx prisma db push`.
+**Database**: SQLite file at `server/prisma/draft.db`. Reset with `cd server && bun run db:reset`.
 
 ## Architecture Patterns
 
