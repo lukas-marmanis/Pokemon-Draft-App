@@ -44,7 +44,7 @@
 
   // ── Route Params ────────────────────────────────────────
   // SvelteKit extracts [sessionId] from the URL automatically
-  const sessionId = $page.params.sessionId;
+  const sessionId = $page.params.sessionId ?? '';
 
   // ── Local State ─────────────────────────────────────────
   let coachName = '';

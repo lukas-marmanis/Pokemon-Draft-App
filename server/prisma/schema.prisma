@@ -14,7 +14,8 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  // DATABASE_URL env var overrides this in production (Docker volume path)
+  // Relative SQLite paths are resolved from this schema's directory.
+  // Docker supplies an absolute path in DATABASE_URL.
   url      = env("DATABASE_URL")
 }
 

@@ -28,7 +28,7 @@
  *  Configure reconnectionDelayMax to cap the backoff delay.
  */
 
-import { io, type Socket } from 'socket.io-client';
+import { type Socket } from 'socket.io-client';
 import type {
   DraftStateSync,
   PickMadePayload,

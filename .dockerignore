@@ -1,0 +1,6 @@
+.git
+**/node_modules
+client/.svelte-kit
+client/build
+server/dist
+server/prisma/*.db

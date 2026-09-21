@@ -1,15 +1,16 @@
 # ── Build Stage ─────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/client
 
 # Copy dependency manifests first for layer caching
-COPY package*.json ./
+COPY client/package*.json ./
 RUN npm ci
 
 # Copy Svelte config and source
-COPY svelte.config.js tailwind.config.js postcss.config.js tsconfig.json ./
-COPY src ./src
+COPY client/svelte.config.js client/tailwind.config.js client/postcss.config.js client/tsconfig.json client/vite.config.ts ./
+COPY client/src ./src
+COPY shared /app/shared
 
 # TODO: Set the API URL at build time via build arg
 # In production this should be the public ngrok/localtunnel URL
@@ -23,14 +24,14 @@ RUN npx svelte-kit sync && npm run build
 # Serve static files with a lightweight HTTP server
 FROM node:20-alpine AS production
 
-WORKDIR /app
+WORKDIR /app/client
 
 # Install a minimal static file server
 # 'serve' is a simple, zero-config static server by Vercel
 RUN npm install -g serve
 
 # Copy built static files from builder
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/client/build ./build
 
 EXPOSE 5173
 

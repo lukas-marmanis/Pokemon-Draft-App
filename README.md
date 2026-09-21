@@ -34,7 +34,7 @@ Open http://localhost:5173 in your browser to test locally.
 
 ### Option B: Native Development (For Contributors)
 
-**Requirements**: Node.js 18+, npm
+**Requirements**: Node.js 20, npm
 
 **Terminal 1 - Backend**:
 ```bash
