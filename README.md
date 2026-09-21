@@ -2,6 +2,10 @@
 
 A self-hosted real-time web app for competitive Pokemon VGC draft leagues. Commissioners run the server locally and share a tunneled URL with coaches, who then participate in a snake-style draft using point budgets.
 
+## Architecture decisions
+
+- [ADR 001: Use Bun for the application runtime and package management](docs/decisions/001-bun-runtime.md)
+
 ## Features
 
 - **Real-time snake draft** with live pick broadcasting to all coaches
