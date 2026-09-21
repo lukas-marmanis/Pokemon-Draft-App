@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.svelte-kit/
+.env
+server/prisma/*.db
+server/prisma/*.db-journal
+server/prisma/*.db-shm
+server/prisma/*.db-wal

@@ -3,9 +3,9 @@
 // ============================================================
 // This file defines the database schema using Prisma ORM.
 // After making changes, run:
-//   npx prisma generate   → regenerate the TypeScript client
-//   npx prisma db push    → sync schema to SQLite file
-//   npx prisma studio     → open browser GUI to inspect data
+//   bun run prisma:generate → regenerate the TypeScript client
+//   bun run prisma:push     → sync schema to SQLite file
+//   bun run prisma:studio   → open browser GUI to inspect data
 // ============================================================
 
 generator client {

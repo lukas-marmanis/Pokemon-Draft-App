@@ -36,6 +36,7 @@ const config = {
     // $lib → src/lib (SvelteKit handles this automatically)
     alias: {
       '@shared': '../shared',
+      zod: './node_modules/zod',
     },
   },
 };

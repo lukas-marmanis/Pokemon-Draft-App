@@ -1099,7 +1099,7 @@ npx ngrok http 3000
 
 **File**: `server/.env`
 ```env
-DATABASE_URL="file:./prisma/draft.db"
+DATABASE_URL="file:./draft.db"
 PORT=3000
 CLIENT_URL="http://localhost:5173"
 NODE_ENV="development"

@@ -97,7 +97,7 @@ registerWebSocketHandlers(io, prisma);
 httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📡 WebSocket accepting connections from ${CLIENT_URL}`);
-  console.log(`🔍 Prisma Studio: run "npx prisma studio" to inspect database`);
+  console.log(`🔍 Prisma Studio: run "bunx prisma studio" to inspect database`);
 });
 
 // ── Graceful Shutdown ─────────────────────────────────────────

@@ -1,16 +1,16 @@
 # ── Build Stage ─────────────────────────────────────────────
-FROM oven/bun:1 AS builder
+FROM oven/bun:1.4.2 AS builder
 
-WORKDIR /app
+WORKDIR /app/client
 
 # Copy dependency manifests first for layer caching
-# TODO: add bun.lockb once generated and use --frozen-lockfile for reproducible builds
-COPY package.json ./
-RUN bun install
+COPY client/package.json client/bun.lock ./
+RUN bun install --frozen-lockfile
 
 # Copy Svelte config and source
-COPY svelte.config.js tailwind.config.js postcss.config.js tsconfig.json ./
-COPY src ./src
+COPY client/svelte.config.js client/tailwind.config.js client/postcss.config.js client/tsconfig.json client/vite.config.ts ./
+COPY client/src ./src
+COPY shared /app/shared
 
 # Set the API URL at build time via build arg
 # In production this should be the public ngrok/localtunnel URL
@@ -31,7 +31,7 @@ WORKDIR /app
 RUN npm install -g serve
 
 # Copy built static files from builder
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/client/build ./build
 
 EXPOSE 5173
 

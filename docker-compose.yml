@@ -13,7 +13,7 @@
 #   Frontend: http://localhost:5173
 #
 # To share with coaches, run a tunnel in a separate terminal:
-#   npx ngrok http 3000           # or: npx localtunnel --port 3000
+#   bunx ngrok http 3000          # or: bunx localtunnel --port 3000
 #   Copy the public URL → share with coaches
 #
 # Database persistence:
@@ -21,15 +21,13 @@
 #   Data survives container restarts.
 #   To completely reset the draft: docker-compose down -v
 
-version: '3.8'
-
 services:
 
   # ── Backend: Express + Socket.io + Prisma ──────────────────
   server:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
       target: production
     container_name: pokemon-draft-server
     ports:
@@ -56,8 +54,8 @@ services:
   # ── Frontend: SvelteKit Static Site ────────────────────────
   client:
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: client/Dockerfile
       target: production
       args:
         # Pass the server URL at build time for Vite to embed

@@ -2,6 +2,10 @@
 
 A self-hosted real-time web app for competitive Pokemon VGC draft leagues. Commissioners run the server locally and share a tunneled URL with coaches, who then participate in a snake-style draft using point budgets.
 
+## Architecture decisions
+
+- [ADR 001: Use Bun for the application runtime and package management](docs/decisions/001-bun-runtime.md)
+
 ## Features
 
 - **Real-time snake draft** with live pick broadcasting to all coaches
@@ -34,40 +38,40 @@ Open http://localhost:5173 in your browser to test locally.
 
 ### Option B: Native Development (For Contributors)
 
-**Requirements**: Node.js 18+, npm
+**Requirements**: Bun 1.4.2
 
 **Terminal 1 - Backend**:
 ```bash
 cd server
-npm install
+bun install
 cp .env.example .env
-npx prisma generate
-npx prisma db push
-npm run dev
+bun run prisma:generate
+bun run prisma:push
+bun run dev
 # Server running on http://localhost:3000
 ```
 
 **Terminal 2 - Frontend**:
 ```bash
 cd client
-npm install
-npm run dev
+bun install
+bun run dev
 # Client running on http://localhost:5173
 ```
 
 **Terminal 3 - Tunnel (Optional)**:
 ```bash
 # Share with coaches (pick one):
-npx ngrok http 3000
+bunx ngrok http 3000
 # OR
-npx localtunnel --port 3000
+bunx localtunnel --port 3000
 ```
 
 ## Project Structure
 
 ```
 pokemon-draft-league/
-├── server/                    # Backend: Node.js + Express + Socket.io
+├── server/                    # Backend: Bun + Express + Socket.io
 │   ├── src/
 │   │   ├── index.ts           # App entry point
 │   │   ├── websocket/         # Socket.io event handlers
@@ -189,13 +193,13 @@ Each coach has 400 points to draft 10 Pokemon. The snake order ensures fairness 
 
 ```bash
 # View/edit data in browser GUI
-cd server && npx prisma studio
+cd server && bunx prisma studio
 
 # Reset database (delete all draft data)
-rm server/prisma/draft.db && cd server && npx prisma db push
+rm server/prisma/draft.db && cd server && bunx prisma db push
 
 # Re-generate Prisma client after schema changes
-cd server && npx prisma generate
+cd server && bunx prisma generate
 ```
 
 ## Troubleshooting
@@ -204,7 +208,7 @@ cd server && npx prisma generate
 
 **State out of sync**: The server broadcasts `draft_state_sync` on reconnect. If a coach sees stale data, they should refresh the page.
 
-**Database errors**: Delete `server/prisma/draft.db` and run `npx prisma db push` to reset.
+**Database errors**: Delete `server/prisma/draft.db` and run `bunx prisma db push` to reset.
 
 **Snake order wrong**: The `calculateNextDraftPosition()` method in DraftService controls this. Write unit tests to verify the algorithm.
 
