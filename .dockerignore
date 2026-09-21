@@ -1,0 +1,9 @@
+.git
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules
+client/.svelte-kit
+client/build
+server/dist
+server/prisma/*.db
